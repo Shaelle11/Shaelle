@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+
+@theme {
+  --color-green: #042a2b;
+  --color-blue: #508CA4;
+  --color-light: #F2F1EB;
+  --color-dark: #121210;
+  --font-display: 'MyCustomFont', serif;
+}
+
+@font-face {
+  font-family: 'MyCustomFont';
+  src: url('./assets/fonts/TAN-SONGBIRD.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+
