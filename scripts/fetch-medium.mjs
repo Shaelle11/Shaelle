@@ -21,12 +21,12 @@ const OUT_FILE = path.join(
 // Bento shapes cycle in this order so however many posts come back, the grid
 // keeps the same curated mosaic look the design was built around.
 const SHAPES = [
-    { span: "col-span-3 row-span-2", text: "text-xl sm:text-2xl" },
-    { span: "col-span-1 row-span-1", text: "text-sm" },
-    { span: "col-span-1 row-span-1", text: "text-sm" },
-    { span: "col-span-1 row-span-1", text: "text-sm" },
-    { span: "col-span-2 row-span-1", text: "text-base sm:text-lg" },
-    { span: "col-span-1 row-span-1", text: "text-sm" },
+    { span: "col-span-3 row-span-2", text: "text-lg sm:text-xl" },
+    { span: "col-span-1 row-span-1", text: "text-xs" },
+    { span: "col-span-1 row-span-1", text: "text-xs" },
+    { span: "col-span-1 row-span-1", text: "text-xs" },
+    { span: "col-span-2 row-span-1", text: "text-sm sm:text-base" },
+    { span: "col-span-1 row-span-1", text: "text-xs" },
 ];
 
 const ACRONYMS = new Set(["ai", "ui", "ux", "api", "css", "html", "llm", "llms", "ppd"]);

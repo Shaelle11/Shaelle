@@ -24,7 +24,9 @@ function ArticleTile({ article, index, scrollProgress, windowStart, windowEnd, s
         >
             <span className="text-xs uppercase tracking-[0.2em] text-blue">{article.tag}</span>
             <div className="flex flex-col gap-3">
-                <h3 className={`line-clamp-4 font-display leading-relaxed ${article.text}`}>{article.title}</h3>
+                <h3 className={`line-clamp-4 px-2 py-1 font-display leading-relaxed ${article.text}`}>
+                    {article.title}
+                </h3>
                 <span className="inline-flex items-center gap-2 text-sm font-medium text-dark/70 transition-colors group-hover:text-green">
                     Read article <span aria-hidden="true">&rarr;</span>
                 </span>

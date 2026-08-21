@@ -5,7 +5,7 @@
     "link": "https://medium.com/@Youtenstudio/the-challenge-c7ab96e5d1da",
     "pubDate": "Fri, 14 Aug 2026 17:38:07 GMT",
     "span": "col-span-3 row-span-2",
-    "text": "text-xl sm:text-2xl"
+    "text": "text-lg sm:text-xl"
   },
   {
     "title": "Report Edition: Building an AI Report Visualizer.",
@@ -13,7 +13,7 @@
     "link": "https://medium.com/@Youtenstudio/report-edition-building-an-ai-report-visualizer-bd136c761d80",
     "pubDate": "Sat, 18 Jul 2026 04:47:25 GMT",
     "span": "col-span-1 row-span-1",
-    "text": "text-sm"
+    "text": "text-xs"
   },
   {
     "title": "Bloom After — Week 4: The Last Sprint, The First Goodbye",
@@ -21,7 +21,7 @@
     "link": "https://medium.com/@Youtenstudio/bloom-after-week-4-the-last-sprint-the-first-goodbye-80def0e964d1",
     "pubDate": "Fri, 27 Mar 2026 17:15:16 GMT",
     "span": "col-span-1 row-span-1",
-    "text": "text-sm"
+    "text": "text-xs"
   },
   {
     "title": "Bloom After — Week 3: Building the Rooms Nobody Sees",
@@ -29,7 +29,7 @@
     "link": "https://medium.com/@Youtenstudio/bloom-after-week-3-building-the-rooms-nobody-sees-aa9b7dbf8f5a",
     "pubDate": "Fri, 20 Mar 2026 22:10:02 GMT",
     "span": "col-span-1 row-span-1",
-    "text": "text-sm"
+    "text": "text-xs"
   },
   {
     "title": "Bloom After — Week 2: When The Code Starts Talking Back",
@@ -37,7 +37,7 @@
     "link": "https://medium.com/@Youtenstudio/bloom-after-week-2-when-the-code-starts-talking-back-d650a9f7096c",
     "pubDate": "Fri, 13 Mar 2026 14:24:45 GMT",
     "span": "col-span-2 row-span-1",
-    "text": "text-base sm:text-lg"
+    "text": "text-sm sm:text-base"
   },
   {
     "title": "Leading the Build of Bloom After: Week 1 of a 4-Week Journey",
@@ -45,6 +45,6 @@
     "link": "https://medium.com/@Youtenstudio/leading-the-build-of-bloom-after-week-1-of-a-4-week-journey-1cb1e77c0ca7",
     "pubDate": "Sat, 07 Mar 2026 00:47:40 GMT",
     "span": "col-span-1 row-span-1",
-    "text": "text-sm"
+    "text": "text-xs"
   }
 ]
