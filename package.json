@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "npm run fetch:articles",
     "build": "vite build",
+    "fetch:articles": "node scripts/fetch-medium.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -28,6 +30,8 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
+    "opentype.js": "^2.0.0",
+    "rss-parser": "^3.13.0",
     "vite": "^8.2.0"
   }
 }

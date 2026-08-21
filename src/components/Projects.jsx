@@ -4,62 +4,43 @@ import { useClampedTransform } from "../lib/scrollTransform";
 
 const VISIBLE_ROWS = 4;
 
+// TAN-SONGBIRD (the display font) has no glyph for "ọ" (o + dot-below) or the
+// combining grave — the browser silently falls back to a plain serif for just
+// that character, which renders far smaller than this font's bold glyphs.
+// Scaling it up keeps the name legible without breaking the display font
+// everywhere else.
+function IleImoName() {
+    return (
+        <>
+            Ilé-ìm<span className="font-serif text-[1.6em]" style={{ verticalAlign: "-0.3em", marginLeft: "-0.05em" }}>ọ̀</span>
+        </>
+    );
+}
+
 const PROJECTS = [
     {
-        tech: ["React", "Node", "PostgreSQL"],
-        name: "Commerce Redesign",
-        title: "Rebuilding checkout for scale",
-        description: "Cut cart abandonment by streamlining a five-step checkout into one page.",
-        link: "#commerce-redesign",
+        tech: ["React", "Supabase", "Gemini"],
+        name: <IleImoName />,
+        title: "Ask questions about your own material, get answers with citations",
+        description:
+            "Connect a GitHub repository and get a conversational answer that links back to the exact file and line range on GitHub.",
+        link: "https://ile-imo.vercel.app",
     },
     {
-        tech: ["Next.js", "Sanity", "Vercel"],
-        name: "Portfolio CMS",
-        title: "A headless CMS for design portfolios",
-        description: "Gave independent designers a fast, editable site without touching code.",
-        link: "#portfolio-cms",
+        tech: ["React", "Recharts", "Gemini"],
+        name: "Report Visualiser",
+        title: "Turn a report into a chart without building anything",
+        description:
+            "Drop in a report and get a chart back. The chat-based version didn't make the deadline, but the structure is there to extend into that experience later.",
+        link: "https://report-visualiser.vercel.app",
     },
     {
-        tech: ["D3", "WebSockets", "Go"],
-        name: "Realtime Dashboard",
-        title: "Live metrics for operations teams",
-        description: "Streamed live infrastructure metrics into a dashboard built for on-call engineers.",
-        link: "#realtime-dashboard",
-    },
-    {
-        tech: ["Swift", "Figma", "Plaid"],
-        name: "Mobile Banking UI",
-        title: "Rethinking everyday banking",
-        description: "Designed a mobile banking flow that made balances and transfers feel instant.",
-        link: "#mobile-banking-ui",
-    },
-    {
-        tech: ["Rust", "gRPC", "Kubernetes"],
-        name: "API Gateway",
-        title: "A gateway built for scale",
-        description: "Replaced a monolith's routing layer with a low-latency gateway across services.",
-        link: "#api-gateway",
-    },
-    {
-        tech: ["Figma", "Storybook", "Tailwind"],
-        name: "Design System",
-        title: "One system, every product",
-        description: "Unified components and tokens across four product teams into a single library.",
-        link: "#design-system",
-    },
-    {
-        tech: ["React Native", "Stripe", "Firebase"],
-        name: "Booking Platform",
-        title: "Scheduling without the back-and-forth",
-        description: "Built a booking flow that handled availability, payments, and reminders end to end.",
-        link: "#booking-platform",
-    },
-    {
-        tech: ["Python", "Airflow", "BigQuery"],
-        name: "Analytics Suite",
-        title: "Turning raw events into answers",
-        description: "Piped product events through a pipeline that powered weekly growth reviews.",
-        link: "#analytics-suite",
+        tech: ["Next.js", "TypeScript", "MongoDB"],
+        name: "Bloom After 🌸",
+        title: "Postpartum care and support for Nigerian mothers",
+        description:
+            "Built as part of the Tabî Project by the TEE Foundation for International Women's Day 2026 — trusted information, verified care directories, and moderated community experiences.",
+        link: "https://bloom-after-59wn.vercel.app/",
     },
 ];
 
@@ -126,6 +107,8 @@ function ShowcaseRow({ project, number, isActive, onMouseMove }) {
     return (
         <motion.a
             href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
             layout
             variants={rowVariants}
             initial="hidden"
@@ -244,7 +227,7 @@ export default function Projects({ scrollProgress, pageCount = 2 }) {
                 moveActive(-1);
             } else if (e.key === "Enter") {
                 const project = PROJECTS[activeIndex];
-                if (project) window.location.href = project.link;
+                if (project) window.open(project.link, "_blank", "noopener,noreferrer");
             }
         };
         window.addEventListener("keydown", handleKey);
@@ -278,7 +261,7 @@ export default function Projects({ scrollProgress, pageCount = 2 }) {
                             const isActive = globalIndex === activeIndex;
                             return (
                                 <ShowcaseRow
-                                    key={project.name}
+                                    key={project.link}
                                     project={project}
                                     number={globalIndex + 1}
                                     isActive={isActive}

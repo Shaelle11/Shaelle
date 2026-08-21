@@ -1,47 +1,9 @@
 import { useEffect, useRef } from "react";
 import { motion, useTransform } from "framer-motion";
 import { useClampedTransform, getSectionWindow } from "../lib/scrollTransform";
+import ARTICLES from "../data/articles.json";
 
 const PAGE_INDEX = 2;
-
-const ARTICLES = [
-    {
-        title: "Shipping fast without breaking trust",
-        tag: "Process",
-        span: "col-span-3 row-span-2",
-        text: "text-xl sm:text-2xl",
-    },
-    {
-        title: "Design systems that outlive us",
-        tag: "Design",
-        span: "col-span-1 row-span-1",
-        text: "text-sm",
-    },
-    {
-        title: "Notes on tiny interfaces",
-        tag: "UI",
-        span: "col-span-1 row-span-1",
-        text: "text-sm",
-    },
-    {
-        title: "Why most rewrites fail",
-        tag: "Engineering",
-        span: "col-span-1 row-span-1",
-        text: "text-sm",
-    },
-    {
-        title: "Reading the room before the roadmap",
-        tag: "Strategy",
-        span: "col-span-2 row-span-1",
-        text: "text-base sm:text-lg",
-    },
-    {
-        title: "The quiet cost of a busy inbox",
-        tag: "Focus",
-        span: "col-span-1 row-span-1",
-        text: "text-sm",
-    },
-];
 
 function ArticleTile({ article, index, scrollProgress, windowStart, windowEnd, settleEnd }) {
     const windowWidth = windowEnd - windowStart;
@@ -52,15 +14,17 @@ function ArticleTile({ article, index, scrollProgress, windowStart, windowEnd, s
 
     return (
         <motion.a
-            href="#"
+            href={article.link}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{ y, opacity, scale }}
             whileHover={{ scale: 1.04 }}
             transition={{ type: "spring", stiffness: 260, damping: 24 }}
-            className={`group relative flex h-56 w-[78%] shrink-0 snap-center flex-col justify-between overflow-hidden bg-light p-6 text-dark shadow-lg sm:h-auto sm:w-auto sm:shrink ${article.span}`}
+            className={`group relative flex h-[60vh] w-full shrink-0 snap-center flex-col justify-between overflow-hidden bg-light p-6 text-dark shadow-lg sm:h-auto sm:w-auto sm:shrink ${article.span}`}
         >
             <span className="text-xs uppercase tracking-[0.2em] text-blue">{article.tag}</span>
-            <div className="flex flex-col gap-2">
-                <h3 className={`font-display leading-snug ${article.text}`}>{article.title}</h3>
+            <div className="flex flex-col gap-3">
+                <h3 className={`line-clamp-4 font-display leading-relaxed ${article.text}`}>{article.title}</h3>
                 <span className="inline-flex items-center gap-2 text-sm font-medium text-dark/70 transition-colors group-hover:text-green">
                     Read article <span aria-hidden="true">&rarr;</span>
                 </span>
@@ -106,10 +70,10 @@ export default function Articles({ scrollProgress, pageCount = 3 }) {
                     ref={scrollRef}
                     className="no-scrollbar flex flex-1 flex-col justify-center overflow-y-auto overflow-x-visible sm:justify-start"
                 >
-                    <div className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-[11%] py-2 scroll-px-[11%] sm:grid sm:auto-rows-[minmax(175px,1fr)] sm:grid-cols-4 sm:gap-6 sm:overflow-visible sm:px-2 sm:scroll-px-0">
+                    <div className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto py-2 sm:grid sm:auto-rows-[minmax(175px,1fr)] sm:grid-cols-4 sm:gap-6 sm:overflow-visible sm:px-2">
                         {ARTICLES.map((article, i) => (
                             <ArticleTile
-                                key={article.title}
+                                key={article.link}
                                 article={article}
                                 index={i}
                                 scrollProgress={scrollProgress}
