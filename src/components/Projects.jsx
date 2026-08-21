@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useSpring, useTransform } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useClampedTransform } from "../lib/scrollTransform";
 
 const VISIBLE_ROWS = 4;
 
@@ -68,14 +69,60 @@ const rowVariants = {
     exit: { opacity: 0, y: -16, transition: { duration: 0.2 } },
 };
 
-function ShowcaseRow({ project, isActive, scrollProgress, positionInView, onMouseMove }) {
-    const fallDistance = 260 + positionInView * 50;
-    const startRotate = positionInView % 2 === 0 ? -4 : 4;
-    const rawY = useTransform(scrollProgress, [0, 1], [-fallDistance, 0]);
-    const rawRotate = useTransform(scrollProgress, [0, 1], [startRotate, 0]);
-    const y = useSpring(rawY, { stiffness: 260, damping: 18, mass: 0.8 });
-    const rotate = useSpring(rawRotate, { stiffness: 260, damping: 18, mass: 0.8 });
+const DIVIDER_LEFT = "calc(60% - 0.75rem)";
 
+const SETTLE_COLUMNS = 8;
+const SETTLE_ROWS = 5;
+const SETTLE_ACCENTS = ["var(--color-blue)", "var(--color-lilac)"];
+
+// Deterministic hash so the accent-square pattern is stable across renders without Math.random.
+function seededFraction(i, salt) {
+    const x = Math.sin(i * 12.9898 + salt * 78.233) * 43758.5453;
+    return x - Math.floor(x);
+}
+
+function SettleSquare({ index, scrollProgress, half }) {
+    const col = index % SETTLE_COLUMNS;
+    const row = Math.floor(index / SETTLE_COLUMNS);
+    const colFraction = col / (SETTLE_COLUMNS - 1);
+
+    const fallStart = (colFraction * 0.3 + (row % 3) * 0.03) * half;
+    const landAt = Math.min(fallStart + 0.35 * half, half);
+    const fadeEnd = Math.min(landAt + 0.15 * half, half);
+
+    const y = useClampedTransform(scrollProgress, [fallStart, landAt], [-180 - row * 14, 0]);
+    const opacity = useClampedTransform(scrollProgress, [landAt, fadeEnd], [1, 0]);
+
+    const isAccent = seededFraction(index, 5) < 0.12;
+    const accentColor = SETTLE_ACCENTS[Math.floor(seededFraction(index, 6) * SETTLE_ACCENTS.length)];
+
+    return (
+        <motion.div
+            className="border border-dark/10"
+            style={{ y, opacity, backgroundColor: isAccent ? accentColor : "var(--color-light)" }}
+        />
+    );
+}
+
+function SettleGrid({ scrollProgress, half }) {
+    const cells = Array.from({ length: SETTLE_COLUMNS * SETTLE_ROWS });
+
+    return (
+        <div
+            className="pointer-events-none absolute inset-0 z-20 grid"
+            style={{
+                gridTemplateColumns: `repeat(${SETTLE_COLUMNS}, 1fr)`,
+                gridTemplateRows: `repeat(${SETTLE_ROWS}, 1fr)`,
+            }}
+        >
+            {cells.map((_, i) => (
+                <SettleSquare key={i} index={i} scrollProgress={scrollProgress} half={half} />
+            ))}
+        </div>
+    );
+}
+
+function ShowcaseRow({ project, number, isActive, onMouseMove }) {
     return (
         <motion.a
             href={project.link}
@@ -84,36 +131,54 @@ function ShowcaseRow({ project, isActive, scrollProgress, positionInView, onMous
             initial="hidden"
             animate="show"
             exit="exit"
-            style={{ y, rotate }}
             onMouseMove={onMouseMove}
-            className={`flex flex-col gap-3 border-b border-light/20 py-6 transition-colors duration-300 ${
+            className={`relative block border-b border-light/20 py-4 transition-colors duration-300 ${
                 isActive ? "text-light" : "text-blue"
             }`}
         >
-            <div className="grid grid-cols-[1fr_2fr] items-stretch gap-6">
-                <span className="border-r border-light/40 pr-6 text-xs uppercase tracking-[0.2em]">
-                    {project.tech.join(" · ")}
-                </span>
-                <span className="font-display text-right text-2xl sm:text-3xl">{project.name}</span>
-            </div>
-            <div className="flex items-start gap-3 text-sm sm:text-base">
-                <motion.span
-                    animate={{ x: isActive ? 6 : 0 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                    &rarr;
-                </motion.span>
-                <div>
-                    <p className="font-medium">{project.title}</p>
-                    <p className="opacity-70">{project.description}</p>
+            <span
+                className="pointer-events-none absolute inset-y-0 hidden w-px bg-light/40 sm:block"
+                style={{ left: DIVIDER_LEFT }}
+                aria-hidden="true"
+            />
+
+            <span
+                className="absolute z-10 hidden h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center border border-light/40 bg-green text-xs sm:flex"
+                style={{ left: DIVIDER_LEFT, top: 0 }}
+            >
+                {String(number).padStart(2, "0")}
+            </span>
+
+            <div className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-[3fr_2fr] sm:gap-6">
+                <div className="order-2 flex flex-col gap-3 sm:order-1">
+                    <span className="text-xs uppercase tracking-[0.2em]">
+                        {project.tech.join(" · ")}
+                    </span>
+                    <div className="flex items-start gap-3 text-sm sm:text-base">
+                        <motion.span
+                            animate={{ x: isActive ? 6 : 0 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                        >
+                            &rarr;
+                        </motion.span>
+                        <div>
+                            <p className="font-medium">{project.title}</p>
+                            <p className="opacity-70">{project.description}</p>
+                        </div>
+                    </div>
                 </div>
+                <span className="order-1 flex items-center gap-2 font-display text-lg sm:order-2 sm:justify-end sm:text-right sm:text-xl">
+                    <span className="text-xs sm:hidden">{String(number).padStart(2, "0")}</span>
+                    {project.name}
+                </span>
             </div>
         </motion.a>
     );
 }
 
-export default function Projects({ scrollProgress }) {
-    const contentOpacity = useTransform(scrollProgress, [0, 1], [0, 1]);
+export default function Projects({ scrollProgress, pageCount = 2 }) {
+    const half = 1 / (pageCount - 1);
+    const contentOpacity = useClampedTransform(scrollProgress, [0, half], [0, 1]);
 
     const [activeIndex, setActiveIndex] = useState(0);
     const [windowStart, setWindowStart] = useState(0);
@@ -197,15 +262,16 @@ export default function Projects({ scrollProgress }) {
                 style={{ opacity: contentOpacity }}
                 className="relative flex h-[90%] w-[90%] flex-col"
             >
-                <div className="mb-10 flex items-end justify-between gap-10 border-b border-light/40 pb-6">
+                <div className="mb-6 flex items-end justify-between gap-10 border-b border-light/40 pb-4">
                     <h2 className="font-display text-2xl text-light sm:text-3xl md:text-4xl">Showcase</h2>
-                    <p className="max-w-sm text-right text-sm text-light/70 sm:text-base">
+                    <p className="hidden max-w-sm text-right text-sm text-light/70 sm:block sm:text-base">
                         A selection of recent work — scroll or use the arrow keys to browse, press enter
                         to open.
                     </p>
                 </div>
 
-                <div className="flex flex-1 flex-col">
+                <div className="relative flex flex-1 flex-col">
+                    <SettleGrid scrollProgress={scrollProgress} half={half} />
                     <AnimatePresence initial={false} mode="popLayout">
                         {visible.map((project, i) => {
                             const globalIndex = windowStart + i;
@@ -214,9 +280,8 @@ export default function Projects({ scrollProgress }) {
                                 <ShowcaseRow
                                     key={project.name}
                                     project={project}
+                                    number={globalIndex + 1}
                                     isActive={isActive}
-                                    scrollProgress={scrollProgress}
-                                    positionInView={i}
                                     onMouseMove={() => setActiveIndex(globalIndex)}
                                 />
                             );

@@ -3,8 +3,10 @@ import { useScroll } from "framer-motion"
 import Hero from "../components/Hero"
 import Nav from "../components/Nav"
 import Projects from "../components/Projects"
+import Articles from "../components/Articles"
+import About from "../components/About"
 
-const PAGE_COUNT = 2
+const PAGE_COUNT = 4
 
 export default function Layout(){
     const trackRef = useRef(null)
@@ -38,18 +40,20 @@ export default function Layout(){
         track.scrollTo({ left: index * track.clientWidth, behavior: "smooth" })
     }
 
-    const isDark = page === 1
+    const isDark = page === 1 || page === 2
 
     return(
         <div className="flex h-screen flex-col overflow-hidden">
-            <Nav/>
+            <Nav page={page} onNavigate={goToPage}/>
             <div className="relative flex-1 overflow-hidden">
                 <div
                     ref={trackRef}
                     className="no-scrollbar flex h-full overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory"
                 >
-                    <Hero scrollProgress={scrollXProgress}/>
-                    <Projects scrollProgress={scrollXProgress}/>
+                    <Hero scrollProgress={scrollXProgress} pageCount={PAGE_COUNT}/>
+                    <Projects scrollProgress={scrollXProgress} pageCount={PAGE_COUNT}/>
+                    <Articles scrollProgress={scrollXProgress} pageCount={PAGE_COUNT}/>
+                    <About/>
                 </div>
 
                 <div
